@@ -1,0 +1,35 @@
+<as:CAM
+ xmlns:as="http://www.oasis-open.org/committees/cam"
+ xmlns:camed="http://jcam.org.uk/editor"
+ xmlns:xml="http://www.w3.org/XML/1998/namespace"
+ xmlns:xs="http://www.w3.org/2001/XMLSchema" CAMlevel="1" version="1.1" cameditor="3.2.1">
+  <as:Header>
+    <as:DateTime>2015-12-04T14:23:33</as:DateTime>
+    <as:Parameters>
+      <as:Parameter name="name" default="testSuiteName" xpath="//suite/@name" use="local" />
+    </as:Parameters>
+  </as:Header>
+  <as:AssemblyStructure>
+    <as:Structure ID="NewFile" taxonomy="XML" reference="">
+      <suite name="testSuiteName">
+        <test name="%%%%" verbose="%2%">
+          <parameter name="%webBrowser%" value="%%%%" />
+          <parameter name="%scenatioFilePath%" value="%%%%" />
+          <parameter name="%testCaseID%" value="%%%%" />
+          <parameter name="%testCaseName%" value="%%%%" />
+          <parameter name="%objectFilePath%" value="%%%%" />
+          <classes>
+            <class name="%DASH_Main_DASH%" />
+          </classes>
+        </test>
+      </suite>
+    </as:Structure>
+  </as:AssemblyStructure>
+  <as:BusinessUseContext>
+    <as:Rules>
+      <as:default>
+        <as:context />
+      </as:default>
+    </as:Rules>
+  </as:BusinessUseContext>
+</as:CAM>

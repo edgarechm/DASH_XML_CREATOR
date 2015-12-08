@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- New document created with EditiX at Fri Dec 04 15:50:11 CST 2015 -->
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="test01">
+	<test verbose="2" name="">
+	<!--A comment here-->
+		<parameter name="webBrowser" value=""/>
+		<parameter name="scenarioFilePath" value=""/>
+		<parameter name="testCaseID" value=""/>
+		<parameter name="testCaseName" value=""/>
+		<parameter name="objectFilePath" value=""/>
+		<classes>
+			<class name="DASH_Main.DASH"/>
+		</classes>
+	</test>
+</suite>

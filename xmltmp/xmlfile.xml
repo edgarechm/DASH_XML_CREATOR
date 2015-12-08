@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<suite name="test">
+<test name="Login to my.ne" verbose="2">
+<!--Connection to my.ne-->
+<parameter name="webBrowser" value="CHROME"/>
+<parameter name="scenarioFilePath" value="TS-LoginMyNe.xls"/>
+<parameter name="testCaseID" value="TS-LoginMyNe_Ed"/>
+<parameter name="testCaseName" value="Open Browser and Login"/>
+<parameter name="objectFilePath" value="loginScreens_objects.properties"/>
+<classes>
+<class name="DASH_Main.DASH"/>
+</classes>
+</test>
+</suite>
