@@ -33,7 +33,7 @@ public class CreateXMLFileJava {
 		prettyFormat(source, xmlFilePath);
 	}
 	
-	
+	/// Call will need to be changed for this---> createXMLFile(String suiteName, String webBrowser, String [][]xmlParameters)
 	public static DOMSource createXMLFile(String[] parameterValues){
 
 		DOMSource source = null;
