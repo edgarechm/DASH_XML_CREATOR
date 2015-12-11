@@ -29,7 +29,7 @@ import javax.swing.table.DefaultTableModel;
 //import java.awt.event.MouseEvent;
 
 //@SuppressWarnings("unused")
-@SuppressWarnings({ "unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes","unused"})
 public class xmlBuildUI {
 
 	private JFrame frmDashTest;
@@ -38,7 +38,7 @@ public class xmlBuildUI {
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JLabel lblXMLFilePath,lblFilename,lblxml;
 	private JButton btnGenerateXmlFile, btnAddRowstests,btnDeleteRowstests, btnExit;
-	private static String[][]xmlParameters;
+	private String[][]xmlParameters;
 	
 	private static String browserSelected, testSuiteName, scenarioFilePath,testCaseID,testCaseName,objectFilePath;
 	private JScrollPane scrollPane;
@@ -209,11 +209,9 @@ public class xmlBuildUI {
 				"#", "Scenario File Path", "Test Case ID", "Test Case Description", "Object File Name"
 			}
 		) {
-			//@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] {
 				Integer.class, String.class, String.class, String.class, String.class
 			};
-			//@SuppressWarnings({ "unchecked", "rawtypes" })
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
@@ -248,7 +246,7 @@ public class xmlBuildUI {
 			}
 		});
 		
-		
+		//Generate XML File
 		btnGenerateXmlFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				
@@ -275,14 +273,23 @@ public class xmlBuildUI {
 					}
 					
 					// It will always have 4 columns (scenarioFilePath,testCaseID,testCaseName,objectFilePath), !skip the first column=>item#!
-					xmlParameters = new String[parameterTable.getModel().getRowCount()][4];
-
-					log("Number of Rows in Table: ", String.valueOf(xmlParameters.length));
+					int tblRows = parameterTable.getModel().getRowCount();
+					int tblCols = parameterTable.getModel().getColumnCount();
+					xmlParameters = new String[tblRows][tblCols];
+					log("Number of Rows in Table: ", String.valueOf(tblRows));
+					log("Number of Columns in Table: ", String.valueOf(tblCols));
+					//Parse the parameterTable and store values into xmlParameters
+					for(int i=0;i<tblRows;i++){
+						for (int j=0;j<tblCols;j++){
+						xmlParameters[i][j]=parameterTable.getModel().getValueAt(i,j).toString();
+						log("Value Stored: ", xmlParameters[i][j]);
+						}
+					}
 					
-					xmlParameters[0][0]=scenarioFilePath;
+					/*xmlParameters[0][0]=scenarioFilePath;
 					xmlParameters[0][1]=testCaseID;
 					xmlParameters[0][2]=testCaseName;
-					xmlParameters[0][3]=objectFilePath;
+					xmlParameters[0][3]=objectFilePath;*/
 					
 					generateXMLFile(testSuiteName,browserSelected,xmlParameters); ///<---- replace this with a call to CreateXMLFileJava
 				}else{
@@ -291,7 +298,7 @@ public class xmlBuildUI {
 			}		
 		});
 		
-		
+		//The Exit button
 		btnExit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				System.exit(0);
