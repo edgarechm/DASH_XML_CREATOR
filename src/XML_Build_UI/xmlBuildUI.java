@@ -17,24 +17,26 @@ import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
-import java.awt.Panel;
-import java.awt.FlowLayout;
+//import java.awt.Panel;
+//import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+//import java.awt.event.MouseAdapter;
+//import java.awt.event.MouseEvent;
 
 //@SuppressWarnings("unused")
+@SuppressWarnings({ "unchecked", "rawtypes"})
 public class xmlBuildUI {
 
 	private JFrame frmDashTest;
 	private JTextField textSuiteName,textFileName;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JLabel lblXMLFilePath,lblFilename,lblxml;
-	private JButton btnGenerateXmlFile, btnAddRowstests, btnExit;
-	private Panel panel;
+	private JButton btnGenerateXmlFile, btnAddRowstests,btnDeleteRowstests, btnExit;
 	private String[][]xmlParameters;
 	
 	private String browserSelected, testSuiteName, scenarioFilePath,testCaseID,testCaseName,objectFilePath;
@@ -71,8 +73,9 @@ public class xmlBuildUI {
 	@SuppressWarnings("serial")
 	private void initialize() {
 		frmDashTest = new JFrame();
+		frmDashTest.setResizable(false);
 		frmDashTest.setTitle("DASH Test - XML Builder");
-		frmDashTest.setBounds(100, 100, 938, 596);
+		frmDashTest.setBounds(20, 100, 1320, 500);
 		frmDashTest.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
 		//The labels and textboxes
@@ -100,14 +103,6 @@ public class xmlBuildUI {
 			rdbtnMicrosoftIE.setToolTipText("DASH will run tests on Microsoft Internet Explorer");
 		buttonGroup.add(rdbtnMicrosoftIE);
 		
-		//Panel showing resulting filename and path
-		panel = new Panel();
-			FlowLayout flowLayout = (FlowLayout) panel.getLayout();
-			flowLayout.setAlignment(FlowLayout.LEFT);
-			
-			lblXMLFilePath = new JLabel("To execute type: ");
-			panel.add(lblXMLFilePath);
-		
 		//Filename Label and TextField
 		lblFilename = new JLabel("File Name:");
 		lblFilename.setFont(new Font("Dialog", Font.BOLD, 12));
@@ -124,84 +119,82 @@ public class xmlBuildUI {
 		btnGenerateXmlFile = new JButton("Generate XML File");
 		btnExit = new JButton("Exit");
 		btnAddRowstests = new JButton("Add Rows (tests)");
+		btnDeleteRowstests = new JButton("Delete Rows (tests)");
+		
 		
 		//Panel with the table of parameters
-		scrollPane = new JScrollPane();
+		scrollPane = new JScrollPane();		
+		lblXMLFilePath = new JLabel("To execute type: ");
 		
 		//Main Panel containing all components
 		GroupLayout groupLayout = new GroupLayout(frmDashTest.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-								.addGroup(groupLayout.createSequentialGroup()
-									.addGap(76)
-									.addComponent(textSuiteName, GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE))
-								.addComponent(lblSuiteName, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE))
-							.addGap(143)
+					.addContainerGap()
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
+						.addComponent(scrollPane, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 902, Short.MAX_VALUE)
+						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+							.addComponent(btnAddRowstests, GroupLayout.PREFERRED_SIZE, 123, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(btnDeleteRowstests))
+						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+							.addComponent(lblSuiteName, GroupLayout.PREFERRED_SIZE, 77, GroupLayout.PREFERRED_SIZE)
+							.addPreferredGap(ComponentPlacement.RELATED)
+							.addComponent(textSuiteName, GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE)
+							.addGap(36)
 							.addComponent(lblFilename, GroupLayout.PREFERRED_SIZE, 64, GroupLayout.PREFERRED_SIZE)
-							.addGap(10)
+							.addGap(18)
 							.addComponent(textFileName, GroupLayout.PREFERRED_SIZE, 119, GroupLayout.PREFERRED_SIZE)
-							.addGap(2)
+							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(lblxml, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(btnAddRowstests)
-							.addGap(686)
-							.addComponent(btnExit, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE))
-						.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 850, GroupLayout.PREFERRED_SIZE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addComponent(btnGenerateXmlFile, GroupLayout.PREFERRED_SIZE, 156, GroupLayout.PREFERRED_SIZE)
-							.addGap(40)
-							.addComponent(panel, GroupLayout.PREFERRED_SIZE, 527, GroupLayout.PREFERRED_SIZE))
-						.addGroup(groupLayout.createSequentialGroup()
+						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
 							.addComponent(lblSelectYourBrowser)
-							.addGap(10)
+							.addGap(18)
 							.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
 								.addComponent(rdbtnMozillaFirefox)
 								.addComponent(rdbtnGoogleChrome)
-								.addComponent(rdbtnMicrosoftIE))))
-					.addGap(34))
+								.addComponent(rdbtnMicrosoftIE)))
+						.addComponent(btnGenerateXmlFile, Alignment.LEADING)
+						.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+							.addComponent(lblXMLFilePath)
+							.addPreferredGap(ComponentPlacement.RELATED, 737, Short.MAX_VALUE)
+							.addComponent(btnExit, GroupLayout.PREFERRED_SIZE, 89, GroupLayout.PREFERRED_SIZE)))
+					.addContainerGap())
 		);
 		groupLayout.setVerticalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(42)
+					.addGap(17)
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(textSuiteName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(3)
-							.addComponent(lblSuiteName))
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(2)
-							.addComponent(lblFilename, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE))
-						.addComponent(textFileName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(2)
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(lblSuiteName)
+							.addComponent(textSuiteName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+							.addComponent(textFileName, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addComponent(lblFilename, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
 							.addComponent(lblxml, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)))
-					.addGap(24)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addGroup(groupLayout.createSequentialGroup()
-							.addGap(4)
-							.addComponent(lblSelectYourBrowser))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblSelectYourBrowser)
 						.addComponent(rdbtnGoogleChrome))
-					.addPreferredGap(ComponentPlacement.RELATED)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addComponent(rdbtnMozillaFirefox)
-					.addGap(4)
+					.addGap(1)
 					.addComponent(rdbtnMicrosoftIE)
 					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(btnGenerateXmlFile)
-						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 23, GroupLayout.PREFERRED_SIZE))
-					.addPreferredGap(ComponentPlacement.UNRELATED)
-					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 289, GroupLayout.PREFERRED_SIZE)
-					.addGap(30)
+					.addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 176, GroupLayout.PREFERRED_SIZE)
+					.addGap(17)
 					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
-						.addComponent(btnExit)
-						.addComponent(btnAddRowstests))
-					.addContainerGap())
+						.addComponent(btnAddRowstests)
+						.addComponent(btnDeleteRowstests))
+					.addGap(18)
+					.addComponent(btnGenerateXmlFile)
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(groupLayout.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblXMLFilePath)
+						.addComponent(btnExit))
+					.addGap(21))
 		);
 		
 		DefaultTableModel modelo = new DefaultTableModel();
@@ -210,40 +203,49 @@ public class xmlBuildUI {
 		
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
-				//{null, null, null, null, null},
 			},
 			new String[] {
-				"Item#", "Scenario File Path", "Test Case ID", "Test Case Description", "Object File Name"
+				"#", "Scenario File Path", "Test Case ID", "Test Case Description", "Object File Name"
 			}
 		) {
-			@SuppressWarnings("rawtypes")
+			//@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] {
 				Integer.class, String.class, String.class, String.class, String.class
 			};
-			@SuppressWarnings({ "unchecked", "rawtypes" })
+			//@SuppressWarnings({ "unchecked", "rawtypes" })
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 		});
-		table.getColumnModel().getColumn(0).setPreferredWidth(40);
-		table.getColumnModel().getColumn(1).setPreferredWidth(124);
-		table.getColumnModel().getColumn(3).setPreferredWidth(209);
-		table.getColumnModel().getColumn(4).setPreferredWidth(102);
+		table.getColumnModel().getColumn(0).setPreferredWidth(2);   //item number
+		table.getColumnModel().getColumn(1).setPreferredWidth(400); //SFP
+		table.getColumnModel().getColumn(2).setPreferredWidth(100); //TCID
+		table.getColumnModel().getColumn(3).setPreferredWidth(400); //TCD
+		table.getColumnModel().getColumn(4).setPreferredWidth(300); //OFN
 		scrollPane.setViewportView(table);
 		frmDashTest.getContentPane().setLayout(groupLayout);
 		
 		
 		//Button Actions!!
-		
+		//Add Tests
 		btnAddRowstests.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int numCols = table.getModel().getColumnCount();
-				Object [] fila = new Object[numCols]; 
-				fila[0] = "unal";
-				fila[1] = "420";
-				fila[2] = "mundo";
-				fila[1] = "420";
-				fila[2] = "mundo";
+				int numRows = table.getModel().getRowCount();
+				Object [] parameterRow = new Object[numCols];
+				parameterRow[0]=numRows+1;
+				((DefaultTableModel) table.getModel()).addRow(parameterRow);
+			}
+		});
+		//Delete Tests
+		btnDeleteRowstests.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//int numCols = table.getModel().getColumnCount();
+				int numRows = table.getModel().getRowCount();
+				//Object [] parameterRow = new Object[numCols];
+				if (numRows>0){
+				((DefaultTableModel) table.getModel()).removeRow(numRows-1);
+				}
 			}
 		});
 		
@@ -311,21 +313,6 @@ public class xmlBuildUI {
 	{
 	    Pattern pattern = Pattern.compile(
 	    	"[^-_.A-Za-z0-9\\-\\.]",
-	    		/*
-	        "# Match a valid Windows filename (unspecified file system).          \n" +
-	        "^                                # Anchor to start of string.        \n" +
-	        "(?!                              # Assert filename is not: CON, PRN, \n" +
-	        "  (?:                            # AUX, NUL, COM1, COM2, COM3, COM4, \n" +
-	        "    CON|PRN|AUX|NUL|             # COM5, COM6, COM7, COM8, COM9,     \n" +
-	        "    COM[1-9]|LPT[1-9]            # LPT1, LPT2, LPT3, LPT4, LPT5,     \n" +
-	        "  )                              # LPT6, LPT7, LPT8, and LPT9...     \n" +
-	        "  (?:\\.[^.]*)?                  # followed by optional extension    \n" +
-	        "  $                              # and end of string                 \n" +
-	        ")                                # End negative lookahead assertion. \n" +
-	        "[^<>:\"/\\\\|?*\\x00-\\x1F]*     # Zero or more valid filename chars.\n" +
-	        "[^<>:\"/\\\\|?*\\x00-\\x1F\\ .]  # Last char is not a space or dot.  \n" +
-	        "$                                # Anchor to end of string.            ",
-	        */
 	        Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE | Pattern.COMMENTS);
 	    Matcher matcher = pattern.matcher(text);
 	    boolean isMatch = matcher.matches();
