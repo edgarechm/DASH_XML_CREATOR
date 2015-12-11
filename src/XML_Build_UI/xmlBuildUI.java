@@ -127,10 +127,10 @@ public class xmlBuildUI {
 		btnExit = new JButton("Exit");
 		btnAddRowstests = new JButton("Add Rows (tests)");
 		
-		//Panel con la tabla de parametros
+		//Panel with the table of parameters
 		scrollPane = new JScrollPane();
 		
-		
+		//Main Panel containing all components
 		GroupLayout groupLayout = new GroupLayout(frmDashTest.getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.TRAILING)
@@ -206,8 +206,8 @@ public class xmlBuildUI {
 					.addContainerGap())
 		);
 		
-		//table = new JTable();
 		DefaultTableModel modelo = new DefaultTableModel();
+		//table = new JTable();
 		table = new JTable(modelo);
 		
 		table.setModel(new DefaultTableModel(
