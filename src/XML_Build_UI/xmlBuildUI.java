@@ -33,15 +33,16 @@ import javax.swing.table.DefaultTableModel;
 public class xmlBuildUI {
 
 	private JFrame frmDashTest;
-	private JTextField textSuiteName,textFileName;
+	private static JTextField textSuiteName;
+	private static JTextField textFileName;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
 	private JLabel lblXMLFilePath,lblFilename,lblxml;
 	private JButton btnGenerateXmlFile, btnAddRowstests,btnDeleteRowstests, btnExit;
-	private String[][]xmlParameters;
+	private static String[][]xmlParameters;
 	
-	private String browserSelected, testSuiteName, scenarioFilePath,testCaseID,testCaseName,objectFilePath;
+	private static String browserSelected, testSuiteName, scenarioFilePath,testCaseID,testCaseName,objectFilePath;
 	private JScrollPane scrollPane;
-	private JTable table;
+	private static JTable parameterTable;
 
 	
 	/**
@@ -199,9 +200,9 @@ public class xmlBuildUI {
 		
 		DefaultTableModel modelo = new DefaultTableModel();
 		//table = new JTable();
-		table = new JTable(modelo);
+		parameterTable = new JTable(modelo);
 		
-		table.setModel(new DefaultTableModel(
+		parameterTable.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
 			new String[] {
@@ -217,12 +218,12 @@ public class xmlBuildUI {
 				return columnTypes[columnIndex];
 			}
 		});
-		table.getColumnModel().getColumn(0).setPreferredWidth(2);   //item number
-		table.getColumnModel().getColumn(1).setPreferredWidth(400); //SFP
-		table.getColumnModel().getColumn(2).setPreferredWidth(100); //TCID
-		table.getColumnModel().getColumn(3).setPreferredWidth(400); //TCD
-		table.getColumnModel().getColumn(4).setPreferredWidth(300); //OFN
-		scrollPane.setViewportView(table);
+		parameterTable.getColumnModel().getColumn(0).setPreferredWidth(2);   //item number
+		parameterTable.getColumnModel().getColumn(1).setPreferredWidth(400); //SFP
+		parameterTable.getColumnModel().getColumn(2).setPreferredWidth(100); //TCID
+		parameterTable.getColumnModel().getColumn(3).setPreferredWidth(400); //TCD
+		parameterTable.getColumnModel().getColumn(4).setPreferredWidth(300); //OFN
+		scrollPane.setViewportView(parameterTable);
 		frmDashTest.getContentPane().setLayout(groupLayout);
 		
 		
@@ -230,21 +231,19 @@ public class xmlBuildUI {
 		//Add Tests
 		btnAddRowstests.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int numCols = table.getModel().getColumnCount();
-				int numRows = table.getModel().getRowCount();
+				int numCols = parameterTable.getModel().getColumnCount();
+				int numRows = parameterTable.getModel().getRowCount();
 				Object [] parameterRow = new Object[numCols];
 				parameterRow[0]=numRows+1;
-				((DefaultTableModel) table.getModel()).addRow(parameterRow);
+				((DefaultTableModel) parameterTable.getModel()).addRow(parameterRow);
 			}
 		});
 		//Delete Tests
 		btnDeleteRowstests.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//int numCols = table.getModel().getColumnCount();
-				int numRows = table.getModel().getRowCount();
-				//Object [] parameterRow = new Object[numCols];
+				int numRows = parameterTable.getModel().getRowCount();
 				if (numRows>0){
-				((DefaultTableModel) table.getModel()).removeRow(numRows-1);
+				((DefaultTableModel) parameterTable.getModel()).removeRow(numRows-1);
 				}
 			}
 		});
@@ -252,8 +251,12 @@ public class xmlBuildUI {
 		
 		btnGenerateXmlFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				if(!isValidName(textFileName.getText())){
-					
+				
+				//check parameters
+				
+				
+				//if(!isValidName(textFileName.getText())){
+				if(parseParameters()){
 					//Here is where parameters are integrated and call to create XML file is done
 					testSuiteName = textSuiteName.getText();
 					scenarioFilePath = textFileName.getText();
@@ -271,9 +274,10 @@ public class xmlBuildUI {
 						browserSelected = "IE";
 					}
 					
-					//I want to see if I can make variable the size of array or fix it to max 10 rows.
-					// however, it will always have 4 columns (scenarioFilePath,testCaseID,testCaseName,objectFilePath)
-					xmlParameters = new String[1][4];
+					// It will always have 4 columns (scenarioFilePath,testCaseID,testCaseName,objectFilePath), !skip the first column=>item#!
+					xmlParameters = new String[parameterTable.getModel().getRowCount()][4];
+
+					log("Number of Rows in Table: ", String.valueOf(xmlParameters.length));
 					
 					xmlParameters[0][0]=scenarioFilePath;
 					xmlParameters[0][1]=testCaseID;
@@ -282,7 +286,7 @@ public class xmlBuildUI {
 					
 					generateXMLFile(testSuiteName,browserSelected,xmlParameters); ///<---- replace this with a call to CreateXMLFileJava
 				}else{
-					JOptionPane.showMessageDialog(frmDashTest, "Invalid File Name!!");	
+					JOptionPane.showMessageDialog(frmDashTest, "Invalid Parameter(s)!!");	
 				}
 			}		
 		});
@@ -307,6 +311,28 @@ public class xmlBuildUI {
 		log ("Test Case ID: ",xmlParameters[0][1]);
 		log ("Test Case Description: ",xmlParameters[0][2]);
 		log ("Object File Path: ",xmlParameters[0][3]);
+	}
+	
+	public static boolean parseParameters(){
+		boolean parametersCheck = false;
+		boolean blFileName=false, blSuiteName=false, blParameterTable=false;
+		
+		if (textFileName.getText().isEmpty()){
+			blSuiteName = false;
+		}else{
+			blFileName = !isValidName(textFileName.getText());
+		}
+		
+		if (!textSuiteName.getText().isEmpty()){
+			blSuiteName = true;
+		}
+		if (parameterTable.getRowCount()>0){
+			blParameterTable = true;
+		}
+		if (blFileName&&blSuiteName&&blParameterTable){
+			parametersCheck=true;
+		}
+		return parametersCheck;
 	}
 	
 	public static boolean isValidName(String text)
