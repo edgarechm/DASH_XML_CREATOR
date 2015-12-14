@@ -17,16 +17,14 @@ import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
-//import java.awt.Panel;
-//import java.awt.FlowLayout;
 import javax.swing.JScrollPane;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
-//import java.awt.event.MouseAdapter;
-//import java.awt.event.MouseEvent;
+
+import XML_Builder.CreateXMLFileJava;
 
 //@SuppressWarnings("unused")
 @SuppressWarnings({ "unchecked", "rawtypes","unused"})

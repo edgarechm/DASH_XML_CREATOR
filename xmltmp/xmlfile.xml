@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<suite name="test">
-<test name="Login to my.ne" verbose="2">
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="TestSuite">
 <!--Connection to my.ne-->
+<test name="Login to my.ne" verbose="2">
 <parameter name="webBrowser" value="CHROME"/>
 <parameter name="scenarioFilePath" value="TS-LoginMyNe.xls"/>
 <parameter name="testCaseID" value="TS-LoginMyNe_Ed"/>

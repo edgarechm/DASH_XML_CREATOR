@@ -23,18 +23,27 @@ public class CreateXMLFileJava {
 
 	final static String[] parameterNames ={"webBrowser","scenarioFilePath","testCaseID","testCaseName","objectFilePath"};
 
+	//@SuppressWarnings("null")
 	public static void main(String argv[]) throws Exception {
 		
 		String localDir = System.getProperty("user.dir");
-		String[] parameter_value={"CHROME","TS-LoginMyNe.xls","TS-LoginMyNe_Ed","Open Browser and Login","loginScreens_objects.properties"};
+		String suiteName = "TestSuite";
+		String[][] parameter_value = new String[1][5];
 		String xmlFilePath = localDir+"\\xmltmp\\xmlfile.xml";
-		DOMSource source = createXMLFile(parameter_value);
+		String webBrowser="CHROME";
 		
-		prettyFormat(source, xmlFilePath);
+		parameter_value[0][0]="CHROME";
+		parameter_value[0][1]="TS-LoginMyNe.xls";
+		parameter_value[0][2]="TS-LoginMyNe_Ed";
+		parameter_value[0][3]="Open Browser and Login";
+		parameter_value[0][4]="loginScreens_objects.properties";
+		
+		createXMLFile(suiteName,xmlFilePath,webBrowser,parameter_value);
 	}
 	
-	/// Call will need to be changed for this---> createXMLFile(String suiteName, String webBrowser, String [][]xmlParameters)
-	public static DOMSource createXMLFile(String[] parameterValues){
+	/// Call will need to be changed for this---> createXMLFile(String suiteName, String xmlFilePath, String webBrowser, String [][]xmlParameters)
+	//public static DOMSource createXMLFile(String[] parameterValues){
+	public static void createXMLFile(String suiteName, String xmlFilePath, String webBrowser, String [][]xmlParameters){
 
 		DOMSource source = null;
 		try {
@@ -42,12 +51,14 @@ public class CreateXMLFileJava {
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+			transformerFactory.setAttribute("indent-number", 2);
 			Transformer transformer = transformerFactory.newTransformer();
 			DOMImplementation domImpl = null;
 			Document doc = null;
 			DocumentType doctype = null;
 			Attr attr = null;
-			Element suite, test, browser, parameter, classes, class_element;
+			Element suite, test, parameter, classes, class_element;
+			//Element suite, test, browser, parameter, classes, class_element;
 
 			// Create a new Document
 			doc = docBuilder.newDocument();
@@ -62,7 +73,7 @@ public class CreateXMLFileJava {
 			suite = doc.createElement("suite");
 			doc.appendChild(suite);
 				attr = doc.createAttribute("name");
-				attr.setValue("test");
+				attr.setValue(suiteName);
 				suite.setAttributeNode(attr);
 
 			// Add the test elements
@@ -76,32 +87,36 @@ public class CreateXMLFileJava {
 			attr = doc.createAttribute("verbose");
 				attr.setValue("2");
 				test.setAttributeNode(attr);
+			//Add a Comment
+			Comment commentElement = doc.createComment("Connection to my.ne");
+				suite.insertBefore(commentElement, test);
 			
 				//add the first parameter element webBrowser
-			browser = doc.createElement("parameter");
+			/*browser = doc.createElement("parameter");
 				attr = doc.createAttribute("name");
 					attr.setValue(parameterNames[0]);
 					browser.setAttributeNode(attr);
 				attr = doc.createAttribute("value");
-					attr.setValue(parameterValues[0]);
+					attr.setValue(webBrowser);
 					browser.setAttributeNode(attr);
 				test.appendChild(browser);
+				*/
 				
-			//Add a Comment
-				Comment commentElement = doc.createComment("Connection to my.ne");
-					test.insertBefore(commentElement, browser);
 					
 			//insert the rest of the parameters
-			for (int i=1;i<parameterNames.length;i++){
+			for (int i=0;i<xmlParameters.length;i++){
+				for (int j=0;j<5;j++){
 				parameter = doc.createElement("parameter");
 				attr = doc.createAttribute("name");
-					attr.setValue(parameterNames[i]);
+					attr.setValue(parameterNames[j]);
 					parameter.setAttributeNode(attr);
 				attr = doc.createAttribute("value");
-					attr.setValue(parameterValues[i]);
+					attr.setValue(xmlParameters[i][j]);
 					parameter.setAttributeNode(attr);
-				test.appendChild(parameter);
-			}	
+				//Here I have to skip the first parameter only in the first run, webBrowser.
+					test.appendChild(parameter);
+				}
+			}
 
 
 			// Call to DASH Main class
@@ -114,9 +129,17 @@ public class CreateXMLFileJava {
 				classes.appendChild(class_element);
 
 
-			// write the content into xml file
-						
+			// write the content into xml file			
 				source = new DOMSource(doc);
+			    try {
+			    	StreamResult result = new StreamResult(new File(xmlFilePath));
+					transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+					transformer.transform(source, result);
+
+					System.out.println("File saved!");
+			    } catch (Exception e) {
+			        throw new RuntimeException(e); // simple exception handling, please review it
+			    }
 			
 
 		  } catch (ParserConfigurationException pce) {
@@ -124,24 +147,6 @@ public class CreateXMLFileJava {
 		  } catch (TransformerException tfe) {
 			tfe.printStackTrace();
 		  }
-		return source;
-
 	}
-	
-	public static void prettyFormat(DOMSource source, String xmlFilePath) throws Exception {
-		TransformerFactory transformerFactory = TransformerFactory.newInstance();
-		transformerFactory.setAttribute("indent-number", 2);
-		Transformer transformer = transformerFactory.newTransformer();
-	    try {
-	    	StreamResult result = new StreamResult(new File(xmlFilePath));
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-			transformer.transform(source, result);
-
-			System.out.println("File saved!");
-	    } catch (Exception e) {
-	        throw new RuntimeException(e); // simple exception handling, please review it
-	    }
-	}
-	
 	
 }
