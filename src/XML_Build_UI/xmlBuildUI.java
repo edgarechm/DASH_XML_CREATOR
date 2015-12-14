@@ -4,7 +4,15 @@ import java.awt.EventQueue;
 
 import javax.swing.JFrame;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
+
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.awt.event.ActionEvent;
@@ -16,6 +24,9 @@ import javax.swing.JTextField;
 import javax.swing.JRadioButton;
 import javax.swing.ButtonGroup;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
+
+import com.sun.glass.events.WindowEvent;
+
 import java.awt.Component;
 import javax.swing.JScrollPane;
 import javax.swing.GroupLayout;
@@ -292,9 +303,27 @@ public class xmlBuildUI {
 						}
 					}
 					if (!exception_error){
-						CreateXMLFileJava.createXMLFile(testSuiteName,xmlFilePath,browserSelected,xmlParameters);
-						JOptionPane.showMessageDialog(frmDashTest, "File \""+textFileName.getText()+".xml\" has been generated");
-						lblXMLFilePath.setText("To execute type: dash "+textFileName.getText()+".xml");
+						//Select the directory where all be located
+						
+						JFileChooser chooser = new JFileChooser();
+			            chooser.setCurrentDirectory(new java.io.File("."));
+			            chooser.setDialogTitle("Browse the folder to process");
+			            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			            chooser.setAcceptAllFileFilterUsed(false);
+			            String targetDir=null;
+
+			            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+			                targetDir = chooser.getSelectedFile().getPath().toString()+"\\";
+			                
+			                Path relative = new File(System.getProperty("user.dir")).toPath().relativize(new File(targetDir).toPath());
+			        
+							//Creates the file
+							CreateXMLFileJava.createXMLFile(testSuiteName,targetDir+xmlFilePath,browserSelected,xmlParameters);
+							JOptionPane.showMessageDialog(frmDashTest, "File \""+targetDir+xmlFilePath+".xml\" has been generated");
+							lblXMLFilePath.setText("To execute type: dash "+relative+"\\"+xmlFilePath+".xml");
+			            } else {
+			                System.out.println("No Selection ");
+			            }
 					}
 					//createXMLFile(testSuiteName,xmlFilePath,browserSelected,xmlParameters);//<--- Call to Create XML File
 					//generateXMLFile(testSuiteName,xmlFilePath,browserSelected,xmlParameters); ///<---- replace this with a call to CreateXMLFileJava
@@ -310,6 +339,31 @@ public class xmlBuildUI {
 				System.exit(0);
 			}
 		});
+		
+		//-----------------In case Window is closed using x button
+		frmDashTest.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		frmDashTest.addWindowListener(new WindowAdapter() {
+		    //@Override
+		    public void windowClosed(WindowEvent e) {
+		        PrintStream nullStream = new PrintStream(new OutputStream() {
+		            public void write(int b) throws IOException {
+		            }
+
+		            public void write(byte b[]) throws IOException {
+		            }
+
+		            public void write(byte b[], int off, int len) throws IOException {
+		            }
+		        });
+		        System.setErr(nullStream);
+		        System.setOut(nullStream);
+		        System.exit(0);
+		    }
+		});
+		
+		
+		
+		
 		//Add all components to the window
 		frmDashTest.getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{lblSuiteName, textSuiteName, lblSelectYourBrowser, rdbtnGoogleChrome, rdbtnMozillaFirefox, rdbtnMicrosoftIE, btnGenerateXmlFile, btnExit}));
 	}

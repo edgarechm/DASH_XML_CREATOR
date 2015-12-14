@@ -133,24 +133,20 @@ public class CreateXMLFileJava {
 					//Here I have to skip the first parameter only in the first run, webBrowser.
 						test.appendChild(parameter);
 				}
+			
+				// Call to DASH Main class
+				classes = doc.createElement("classes");
+				test.appendChild(classes);
+				class_element = doc.createElement("class");
+					attr = doc.createAttribute("name");
+					attr.setValue("DASH_Main.DASH");
+					class_element.setAttributeNode(attr);
+					classes.appendChild(class_element);
 			}
-
-
-			// Call to DASH Main class
-			classes = doc.createElement("classes");
-			test.appendChild(classes);
-			class_element = doc.createElement("class");
-				attr = doc.createAttribute("name");
-				attr.setValue("DASH_Main.DASH");
-				class_element.setAttributeNode(attr);
-				classes.appendChild(class_element);
-
 
 			// write the content into xml file			
 				source = new DOMSource(doc);
 			    try {
-			    	String localDir = System.getProperty("user.dir"); //Need to add the final path location calling system
-			    	xmlFilePath = localDir+"\\"+xmlFilePath;
 			    	StreamResult result = new StreamResult(new File(xmlFilePath+".xml"));
 					transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 					transformer.transform(source, result);
