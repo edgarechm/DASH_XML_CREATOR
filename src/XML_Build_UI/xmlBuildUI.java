@@ -38,7 +38,7 @@ public class xmlBuildUI {
 	private JButton btnGenerateXmlFile, btnAddRowstests,btnDeleteRowstests, btnExit;
 	private String[][]xmlParameters;
 	
-	private static String browserSelected, testSuiteName, scenarioFilePath,testCaseID,testCaseName,objectFilePath;
+	private static String browserSelected, testSuiteName, xmlFilePath,testCaseID,testCaseName,objectFilePath;
 	private JScrollPane scrollPane;
 	private static JTable parameterTable;
 
@@ -107,6 +107,7 @@ public class xmlBuildUI {
 		lblFilename.setFont(new Font("Dialog", Font.BOLD, 12));
 		
 		textFileName = new JTextField();
+		textFileName.setToolTipText("Extension (.xml) not needed!");
 		textFileName.setColumns(10);
 		
 		lblxml = new JLabel(".xml");
@@ -204,17 +205,17 @@ public class xmlBuildUI {
 			new Object[][] {
 			},
 			new String[] {
-				"#", "Scenario File Path", "Test Case ID", "Test Case Description", "Object File Name"
+				"Test Name", "Scenario File Path", "Test Case ID", "Test Case Description", "Object File Name"
 			}
 		) {
 			Class[] columnTypes = new Class[] {
-				Integer.class, String.class, String.class, String.class, String.class
+				String.class, String.class, String.class, String.class, String.class
 			};
 			public Class getColumnClass(int columnIndex) {
 				return columnTypes[columnIndex];
 			}
 		});
-		parameterTable.getColumnModel().getColumn(0).setPreferredWidth(2);   //item number
+		parameterTable.getColumnModel().getColumn(0).setPreferredWidth(100);   //item number
 		parameterTable.getColumnModel().getColumn(1).setPreferredWidth(400); //SFP
 		parameterTable.getColumnModel().getColumn(2).setPreferredWidth(100); //TCID
 		parameterTable.getColumnModel().getColumn(3).setPreferredWidth(400); //TCD
@@ -230,7 +231,7 @@ public class xmlBuildUI {
 				int numCols = parameterTable.getModel().getColumnCount();
 				int numRows = parameterTable.getModel().getRowCount();
 				Object [] parameterRow = new Object[numCols];
-				parameterRow[0]=numRows+1;
+				//parameterRow[0]=numRows+1;
 				((DefaultTableModel) parameterTable.getModel()).addRow(parameterRow);
 			}
 		});
@@ -255,7 +256,7 @@ public class xmlBuildUI {
 				if(parseParameters()){
 					//Here is where parameters are integrated and call to create XML file is done
 					testSuiteName = textSuiteName.getText();
-					scenarioFilePath = textFileName.getText();
+					xmlFilePath = textFileName.getText();
 					testCaseID = "TS-001";
 					testCaseName = "This is a test";
 					objectFilePath = "loginScreens_objects.properties";
@@ -273,25 +274,32 @@ public class xmlBuildUI {
 					// It will always have 4 columns (scenarioFilePath,testCaseID,testCaseName,objectFilePath), !skip the first column=>item#!
 					int tblRows = parameterTable.getModel().getRowCount();
 					int tblCols = parameterTable.getModel().getColumnCount();
+					boolean exception_error = false;
 					xmlParameters = new String[tblRows][tblCols];
-					log("Number of Rows in Table: ", String.valueOf(tblRows));
-					log("Number of Columns in Table: ", String.valueOf(tblCols));
+					//log("Number of Rows in Table: ", String.valueOf(tblRows));
+					//log("Number of Columns in Table: ", String.valueOf(tblCols));
 					//Parse the parameterTable and store values into xmlParameters
 					for(int i=0;i<tblRows;i++){
 						for (int j=0;j<tblCols;j++){
-						xmlParameters[i][j]=parameterTable.getModel().getValueAt(i,j).toString();
-						log("Value Stored: ", xmlParameters[i][j]);
+							try{
+								xmlParameters[i][j]=parameterTable.getModel().getValueAt(i,j).toString();
+							}catch (Exception e){
+								JOptionPane.showMessageDialog(frmDashTest, "Test Parameters cannot be empty!!!");
+								exception_error = true;
+							}
+							
+						//log("Value Stored: ", xmlParameters[i][j]);
 						}
 					}
-					
-					/*xmlParameters[0][0]=scenarioFilePath;
-					xmlParameters[0][1]=testCaseID;
-					xmlParameters[0][2]=testCaseName;
-					xmlParameters[0][3]=objectFilePath;*/
-					
-					generateXMLFile(testSuiteName,browserSelected,xmlParameters); ///<---- replace this with a call to CreateXMLFileJava
+					if (!exception_error){
+						CreateXMLFileJava.createXMLFile(testSuiteName,xmlFilePath,browserSelected,xmlParameters);
+						JOptionPane.showMessageDialog(frmDashTest, "File \""+textFileName.getText()+".xml\" has been generated");
+						lblXMLFilePath.setText("To execute type: dash "+textFileName.getText()+".xml");
+					}
+					//createXMLFile(testSuiteName,xmlFilePath,browserSelected,xmlParameters);//<--- Call to Create XML File
+					//generateXMLFile(testSuiteName,xmlFilePath,browserSelected,xmlParameters); ///<---- replace this with a call to CreateXMLFileJava
 				}else{
-					JOptionPane.showMessageDialog(frmDashTest, "Invalid Parameter(s)!!");	
+					//JOptionPane.showMessageDialog(frmDashTest, "Invalid Parameter(s)!!");	
 				}
 			}		
 		});
@@ -306,16 +314,26 @@ public class xmlBuildUI {
 		frmDashTest.getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{lblSuiteName, textSuiteName, lblSelectYourBrowser, rdbtnGoogleChrome, rdbtnMozillaFirefox, rdbtnMicrosoftIE, btnGenerateXmlFile, btnExit}));
 	}
 	
-	private void generateXMLFile(String suiteName, String webBrowser, String [][]xmlParameters) {  ///<--- will pass parameters from an array
+	private void generateXMLFile(String suiteName, String xmlFilePath, String webBrowser, String [][]xmlParameters) {  ///<--- will pass parameters from an array
 		JOptionPane.showMessageDialog(frmDashTest, "File \""+textFileName.getText()+".xml\" has been generated");
 		lblXMLFilePath.setText("To execute type: dash "+textFileName.getText()+".xml");
 		
 		log("Suite Name: ",suiteName);
+		log("XML File Name: ", xmlFilePath);
 		log("Select Browser: ",webBrowser);
-		log ("Scenario File Path: ",xmlParameters[0][0]);
-		log ("Test Case ID: ",xmlParameters[0][1]);
-		log ("Test Case Description: ",xmlParameters[0][2]);
-		log ("Object File Path: ",xmlParameters[0][3]);
+		log("Test Name: ",xmlParameters[0][0]);
+		log("Scenario File Path: ",xmlParameters[0][1]);
+		log("Test Case ID: ",xmlParameters[0][2]);
+		log("Test Case Description: ",xmlParameters[0][3]);
+		log("Object File Path: ",xmlParameters[0][4]);
+		log("**********","*");
+		log("Test Name: ",xmlParameters[1][0]);
+		log("Scenario File Path: ",xmlParameters[1][1]);
+		log("Test Case ID: ",xmlParameters[1][2]);
+		log("Test Case Description: ",xmlParameters[0][3]);
+		log("Object File Path: ",xmlParameters[1][4]);
+		
+		//CreateXMLFileJava.(suiteName,xmlFilePath,webBrowser,xmlParameters);
 	}
 	
 	public static boolean parseParameters(){
@@ -324,15 +342,26 @@ public class xmlBuildUI {
 		
 		if (textFileName.getText().isEmpty()){
 			blSuiteName = false;
+			JOptionPane.showMessageDialog(null, "Missing File Name!!");
 		}else{
 			blFileName = !isValidName(textFileName.getText());
+			if(!blFileName){
+				JOptionPane.showMessageDialog(null, "Invalid FileName!!");
+			}else if(textFileName.getText().endsWith(".xml")){
+					blSuiteName = false;
+					JOptionPane.showMessageDialog(null, "Extension is not Needed!!");
+				}
 		}
 		
 		if (!textSuiteName.getText().isEmpty()){
 			blSuiteName = true;
+		}else{
+			JOptionPane.showMessageDialog(null, "Missing Suite Name!!");
 		}
 		if (parameterTable.getRowCount()>0){
 			blParameterTable = true;
+		}else{
+			JOptionPane.showMessageDialog(null, "Missing Test Parameters!!");
 		}
 		if (blFileName&&blSuiteName&&blParameterTable){
 			parametersCheck=true;

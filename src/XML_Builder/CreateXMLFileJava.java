@@ -24,25 +24,32 @@ public class CreateXMLFileJava {
 	final static String[] parameterNames ={"webBrowser","scenarioFilePath","testCaseID","testCaseName","objectFilePath"};
 
 	//@SuppressWarnings("null")
-	public static void main(String argv[]) throws Exception {
+	/*public static void main(String argv[]) throws Exception {
+		
 		
 		String localDir = System.getProperty("user.dir");
 		String suiteName = "TestSuite";
-		String[][] parameter_value = new String[1][5];
+		String[][] parameter_value = new String[2][5];
 		String xmlFilePath = localDir+"\\xmltmp\\xmlfile.xml";
 		String webBrowser="CHROME";
 		
-		parameter_value[0][0]="CHROME";
-		parameter_value[0][1]="TS-LoginMyNe.xls";
-		parameter_value[0][2]="TS-LoginMyNe_Ed";
-		parameter_value[0][3]="Open Browser and Login";
-		parameter_value[0][4]="loginScreens_objects.properties";
+		parameter_value[0][0]="Test 01";   //TestName
+		parameter_value[0][1]="TS-LoginMyNe.xls"; //Scenario File Path
+		parameter_value[0][2]="TS-LoginMyNe_Ed"; //Test Case ID
+		parameter_value[0][3]="Open Browser and Login";  //Test Description
+		parameter_value[0][4]="loginScreens_objects.properties"; //Object File
+		
+		parameter_value[1][0]="Test 02";   //TestName
+		parameter_value[1][1]="TS-LoginMyNe2.xls"; //Scenario File Path
+		parameter_value[1][2]="TS-LoginMyNe_Ed2"; //Test Case ID
+		parameter_value[1][3]="Open Browser and Login two";  //Test Description
+		parameter_value[1][4]="loginScreens_objects2.properties"; //Object File
 		
 		createXMLFile(suiteName,xmlFilePath,webBrowser,parameter_value);
-	}
+	
+	}*/
 	
 	/// Call will need to be changed for this---> createXMLFile(String suiteName, String xmlFilePath, String webBrowser, String [][]xmlParameters)
-	//public static DOMSource createXMLFile(String[] parameterValues){
 	public static void createXMLFile(String suiteName, String xmlFilePath, String webBrowser, String [][]xmlParameters){
 
 		DOMSource source = null;
@@ -58,7 +65,6 @@ public class CreateXMLFileJava {
 			DocumentType doctype = null;
 			Attr attr = null;
 			Element suite, test, parameter, classes, class_element;
-			//Element suite, test, browser, parameter, classes, class_element;
 
 			// Create a new Document
 			doc = docBuilder.newDocument();
@@ -75,46 +81,57 @@ public class CreateXMLFileJava {
 				attr = doc.createAttribute("name");
 				attr.setValue(suiteName);
 				suite.setAttributeNode(attr);
-
 			// Add the test elements
-			test = doc.createElement("test");
-			suite.appendChild(test);
-
-			// set attribute to test
-			attr = doc.createAttribute("name");
-				attr.setValue("Login to my.ne");
-				test.setAttributeNode(attr);
-			attr = doc.createAttribute("verbose");
-				attr.setValue("2");
-				test.setAttributeNode(attr);
-			//Add a Comment
-			Comment commentElement = doc.createComment("Connection to my.ne");
-				suite.insertBefore(commentElement, test);
-			
-				//add the first parameter element webBrowser
-			/*browser = doc.createElement("parameter");
-				attr = doc.createAttribute("name");
-					attr.setValue(parameterNames[0]);
-					browser.setAttributeNode(attr);
-				attr = doc.createAttribute("value");
-					attr.setValue(webBrowser);
-					browser.setAttributeNode(attr);
-				test.appendChild(browser);
-				*/
-				
-					
-			//insert the rest of the parameters
+			test = null; //doc.createElement("test");	
 			for (int i=0;i<xmlParameters.length;i++){
-				for (int j=0;j<5;j++){
-				parameter = doc.createElement("parameter");
+				// Add the test elements
+				test = doc.createElement("test");
+				suite.appendChild(test);
+	
+				// set attribute to test
 				attr = doc.createAttribute("name");
-					attr.setValue(parameterNames[j]);
-					parameter.setAttributeNode(attr);
-				attr = doc.createAttribute("value");
-					attr.setValue(xmlParameters[i][j]);
-					parameter.setAttributeNode(attr);
-				//Here I have to skip the first parameter only in the first run, webBrowser.
-					test.appendChild(parameter);
+					attr.setValue(xmlParameters[i][0]);
+					test.setAttributeNode(attr);
+				attr = doc.createAttribute("verbose");
+					attr.setValue("2");
+					test.setAttributeNode(attr);
+				//Add a Comment
+				Comment commentElement = doc.createComment(xmlParameters[i][3]);
+					suite.insertBefore(commentElement, test);
+				//Add Browser Parameter
+				if (i==0){//Only the first matters
+					parameter = doc.createElement("parameter");
+					attr = doc.createAttribute("name");
+						attr.setValue("webBrowser");
+						parameter.setAttributeNode(attr);
+					attr = doc.createAttribute("value");
+						attr.setValue(webBrowser);
+						parameter.setAttributeNode(attr);
+					//Here I have to skip the first parameter only in the first run, webBrowser.
+						test.appendChild(parameter);
+				}else{ //The rest are the "SAME" browser
+					parameter = doc.createElement("parameter");
+					attr = doc.createAttribute("name");
+						attr.setValue("webBrowser");
+						parameter.setAttributeNode(attr);
+					attr = doc.createAttribute("value");
+						attr.setValue("SAME");
+						parameter.setAttributeNode(attr);
+					//Here I have to skip the first parameter only in the first run, webBrowser.
+						test.appendChild(parameter);
+				}
+				
+				//insert the rest of the parameters
+					for (int j=1;j<5;j++){
+					parameter = doc.createElement("parameter");
+					attr = doc.createAttribute("name");
+						attr.setValue(parameterNames[j]);
+						parameter.setAttributeNode(attr);
+					attr = doc.createAttribute("value");
+						attr.setValue(xmlParameters[i][j]);
+						parameter.setAttributeNode(attr);
+					//Here I have to skip the first parameter only in the first run, webBrowser.
+						test.appendChild(parameter);
 				}
 			}
 
@@ -132,7 +149,9 @@ public class CreateXMLFileJava {
 			// write the content into xml file			
 				source = new DOMSource(doc);
 			    try {
-			    	StreamResult result = new StreamResult(new File(xmlFilePath));
+			    	String localDir = System.getProperty("user.dir"); //Need to add the final path location calling system
+			    	xmlFilePath = localDir+"\\"+xmlFilePath;
+			    	StreamResult result = new StreamResult(new File(xmlFilePath+".xml"));
 					transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 					transformer.transform(source, result);
 
@@ -147,6 +166,7 @@ public class CreateXMLFileJava {
 		  } catch (TransformerException tfe) {
 			tfe.printStackTrace();
 		  }
-	}
+		//return true;
+	} 
 	
 }
