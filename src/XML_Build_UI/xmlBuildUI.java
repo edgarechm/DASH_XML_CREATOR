@@ -40,6 +40,7 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.event.TableModelListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -247,7 +248,6 @@ public class xmlBuildUI {
 		scrollPane.setViewportView(parameterTable);
 		frmDashTest.getContentPane().setLayout(groupLayout);
 		
-		
 		//Button Actions!!
 		//Add Tests
 		btnAddRowstests.addActionListener(new ActionListener() {
@@ -273,57 +273,80 @@ public class xmlBuildUI {
 		parameterTable.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				// TODO Auto-generated method stub
 				if (parameterTable.isColumnSelected(1)){
-					JOptionPane.showMessageDialog(null, "Something just happened!!");
+					//JOptionPane.showMessageDialog(null, "Something just happened!!");
+					JFileChooser chooser = new JFileChooser();
+					FileNameExtensionFilter filter = new FileNameExtensionFilter(
+					        "Excel Files", "xls", "xlsx");
+					chooser.setFileFilter(filter);
+		            chooser.setCurrentDirectory(new java.io.File("..\\DASH_TEST_SRC\\automatedScripts"));
+		            chooser.setDialogTitle("Select your Script File");
+		            chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		            chooser.setAcceptAllFileFilterUsed(false);
+		            String targetDir=null;
+		            Path relative=null;
+		            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+		                targetDir = chooser.getSelectedFile().getPath().toString()+"\\";
+		                relative = new File(System.getProperty("user.dir")).toPath().relativize(new File(targetDir).toPath());
+		            } else {        }	
+					//---------------------
 					int numRows = parameterTable.getModel().getRowCount()-1;
 					String value = new String("Column1!!");
 					//Object [] value = new Object[1];
-					parameterTable.setValueAt(value, numRows, 1);
+					parameterTable.setValueAt(relative, numRows, 1);
 				}
 				
 				if (parameterTable.isColumnSelected(4)){
-				JOptionPane.showMessageDialog(null, "Something just happened!!");
+				//JOptionPane.showMessageDialog(null, "Something just happened!!");
+					JFileChooser chooser = new JFileChooser();
+					FileNameExtensionFilter filter = new FileNameExtensionFilter(
+					        "Properties Files", "properties");
+					chooser.setFileFilter(filter);
+		            chooser.setCurrentDirectory(new java.io.File("..\\DASH_TEST_SRC\\object_repositories"));
+		            chooser.setDialogTitle("Select your Properties File");
+		            chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+		            chooser.setAcceptAllFileFilterUsed(false);
+		            String targetDir=null;
+		            Path relative=null;
+		            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+		                targetDir = chooser.getSelectedFile().getPath().toString()+"\\";
+		                relative = new File(System.getProperty("user.dir")).toPath().relativize(new File(targetDir).toPath());
+		            } else {        }
 				int numRows = parameterTable.getModel().getRowCount()-1;
 				String value = new String("Column4!!");
 				//Object [] value = new Object[1];
-				parameterTable.setValueAt(value, numRows, 4);
+				parameterTable.setValueAt(relative, numRows, 4);
 				}
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				// TODO Auto-generated method stub
+				//Auto-generated method stub
 				
 			}
 
 			@Override
 			public void mouseExited(MouseEvent e) {
-				// TODO Auto-generated method stub
+				//Auto-generated method stub
 				
 			}
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				// TODO Auto-generated method stub
+				//Auto-generated method stub
 				
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				// TODO Auto-generated method stub
-				
+				//Auto-generated method stub	
 			}
 		});
-		
 		
 		//Generate XML File
 		btnGenerateXmlFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				
 				//check parameters
-				
-				
 				//if(!isValidName(textFileName.getText())){
 				if(parseParameters()){
 					//Here is where parameters are integrated and call to create XML file is done
@@ -383,7 +406,7 @@ public class xmlBuildUI {
 							JOptionPane.showMessageDialog(frmDashTest, "File \""+targetDir+xmlFilePath+".xml\" has been generated");
 							lblXMLFilePath.setText("To execute type: dash "+relative+"\\"+xmlFilePath+".xml");
 			            } else {
-			                System.out.println("No Selection ");
+			                //System.out.println("No Selection ");
 			            }
 					}
 					//createXMLFile(testSuiteName,xmlFilePath,browserSelected,xmlParameters);//<--- Call to Create XML File
