@@ -7,7 +7,11 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.WindowAdapter;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -22,6 +26,8 @@ import javax.swing.JOptionPane;
 import java.awt.Font;
 import javax.swing.JTextField;
 import javax.swing.JRadioButton;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.ButtonGroup;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 
@@ -32,8 +38,11 @@ import javax.swing.JScrollPane;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
+import javax.swing.event.TableColumnModelListener;
+import javax.swing.event.TableModelListener;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
 
 import XML_Builder.CreateXMLFileJava;
 
@@ -52,6 +61,8 @@ public class xmlBuildUI {
 	private static String browserSelected, testSuiteName, xmlFilePath,testCaseID,testCaseName,objectFilePath;
 	private JScrollPane scrollPane;
 	private static JTable parameterTable;
+	private TableModelListener tableListener;
+	//private ButtonColumn btnBrowseForPropertiesFile,btnBrowseForXLSFile;
 
 	
 	/**
@@ -131,6 +142,7 @@ public class xmlBuildUI {
 		btnExit = new JButton("Exit");
 		btnAddRowstests = new JButton("Add Rows (tests)");
 		btnDeleteRowstests = new JButton("Delete Rows (tests)");
+		//btnBrowseForPropertiesFile = new JButton("...");
 		
 		
 		//Panel with the table of parameters
@@ -211,6 +223,7 @@ public class xmlBuildUI {
 		DefaultTableModel modelo = new DefaultTableModel();
 		//table = new JTable();
 		parameterTable = new JTable(modelo);
+		//parameterTable.setToolTipText("This is a table");
 		
 		parameterTable.setModel(new DefaultTableModel(
 			new Object[][] {
@@ -242,10 +255,10 @@ public class xmlBuildUI {
 				int numCols = parameterTable.getModel().getColumnCount();
 				int numRows = parameterTable.getModel().getRowCount();
 				Object [] parameterRow = new Object[numCols];
-				//parameterRow[0]=numRows+1;
 				((DefaultTableModel) parameterTable.getModel()).addRow(parameterRow);
 			}
 		});
+		
 		//Delete Tests
 		btnDeleteRowstests.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -255,6 +268,54 @@ public class xmlBuildUI {
 				}
 			}
 		});
+		
+		//Actions on the Parameter table
+		parameterTable.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				// TODO Auto-generated method stub
+				if (parameterTable.isColumnSelected(1)){
+					JOptionPane.showMessageDialog(null, "Something just happened!!");
+					int numRows = parameterTable.getModel().getRowCount()-1;
+					String value = new String("Column1!!");
+					//Object [] value = new Object[1];
+					parameterTable.setValueAt(value, numRows, 1);
+				}
+				
+				if (parameterTable.isColumnSelected(4)){
+				JOptionPane.showMessageDialog(null, "Something just happened!!");
+				int numRows = parameterTable.getModel().getRowCount()-1;
+				String value = new String("Column4!!");
+				//Object [] value = new Object[1];
+				parameterTable.setValueAt(value, numRows, 4);
+				}
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
 		
 		//Generate XML File
 		btnGenerateXmlFile.addActionListener(new ActionListener() {
@@ -361,34 +422,14 @@ public class xmlBuildUI {
 		    }
 		});
 		
-		
-		
-		
 		//Add all components to the window
 		frmDashTest.getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{lblSuiteName, textSuiteName, lblSelectYourBrowser, rdbtnGoogleChrome, rdbtnMozillaFirefox, rdbtnMicrosoftIE, btnGenerateXmlFile, btnExit}));
 	}
 	
-	private void generateXMLFile(String suiteName, String xmlFilePath, String webBrowser, String [][]xmlParameters) {  ///<--- will pass parameters from an array
+	/*private void generateXMLFile(String suiteName, String xmlFilePath, String webBrowser, String [][]xmlParameters) {  ///<--- will pass parameters from an array
 		JOptionPane.showMessageDialog(frmDashTest, "File \""+textFileName.getText()+".xml\" has been generated");
 		lblXMLFilePath.setText("To execute type: dash "+textFileName.getText()+".xml");
-		
-		log("Suite Name: ",suiteName);
-		log("XML File Name: ", xmlFilePath);
-		log("Select Browser: ",webBrowser);
-		log("Test Name: ",xmlParameters[0][0]);
-		log("Scenario File Path: ",xmlParameters[0][1]);
-		log("Test Case ID: ",xmlParameters[0][2]);
-		log("Test Case Description: ",xmlParameters[0][3]);
-		log("Object File Path: ",xmlParameters[0][4]);
-		log("**********","*");
-		log("Test Name: ",xmlParameters[1][0]);
-		log("Scenario File Path: ",xmlParameters[1][1]);
-		log("Test Case ID: ",xmlParameters[1][2]);
-		log("Test Case Description: ",xmlParameters[0][3]);
-		log("Object File Path: ",xmlParameters[1][4]);
-		
-		//CreateXMLFileJava.(suiteName,xmlFilePath,webBrowser,xmlParameters);
-	}
+	}*/
 	
 	public static boolean parseParameters(){
 		boolean parametersCheck = false;
