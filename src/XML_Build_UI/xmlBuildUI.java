@@ -47,7 +47,6 @@ import javax.swing.table.TableModel;
 
 import XML_Builder.CreateXMLFileJava;
 
-//@SuppressWarnings("unused")
 @SuppressWarnings({ "unchecked", "rawtypes","unused"})
 public class xmlBuildUI {
 
@@ -63,12 +62,7 @@ public class xmlBuildUI {
 	private JScrollPane scrollPane;
 	private static JTable parameterTable;
 	private TableModelListener tableListener;
-	//private ButtonColumn btnBrowseForPropertiesFile,btnBrowseForXLSFile;
 
-	
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -82,16 +76,10 @@ public class xmlBuildUI {
 		});
 	}
 
-	/**
-	 * Create the application.
-	 */
 	public xmlBuildUI() {
 		initialize();
 	}
 
-	/**
-	 * Initialize the contents of the frame.
-	 */
 	@SuppressWarnings("serial")
 	private void initialize() {
 		frmDashTest = new JFrame();
@@ -135,9 +123,7 @@ public class xmlBuildUI {
 		
 		lblxml = new JLabel(".xml");
 		lblxml.setFont(new Font("Dialog", Font.PLAIN, 12));
-		
-		
-		
+			
 		//The buttons
 		btnGenerateXmlFile = new JButton("Generate XML File");
 		btnExit = new JButton("Exit");
@@ -221,10 +207,8 @@ public class xmlBuildUI {
 					.addGap(21))
 		);
 		
-		DefaultTableModel modelo = new DefaultTableModel();
-		//table = new JTable();
-		parameterTable = new JTable(modelo);
-		//parameterTable.setToolTipText("This is a table");
+		DefaultTableModel tableModel = new DefaultTableModel();
+		parameterTable = new JTable(tableModel);
 		
 		parameterTable.setModel(new DefaultTableModel(
 			new Object[][] {
@@ -240,7 +224,7 @@ public class xmlBuildUI {
 				return columnTypes[columnIndex];
 			}
 		});
-		parameterTable.getColumnModel().getColumn(0).setPreferredWidth(100);   //item number
+		parameterTable.getColumnModel().getColumn(0).setPreferredWidth(100); //item number
 		parameterTable.getColumnModel().getColumn(1).setPreferredWidth(400); //SFP
 		parameterTable.getColumnModel().getColumn(2).setPreferredWidth(100); //TCID
 		parameterTable.getColumnModel().getColumn(3).setPreferredWidth(400); //TCD
@@ -257,24 +241,23 @@ public class xmlBuildUI {
 				Object [] parameterRow = new Object[numCols];
 				((DefaultTableModel) parameterTable.getModel()).addRow(parameterRow);
 			}
-		});
-		
+		});	
 		//Delete Tests
 		btnDeleteRowstests.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int numRows = parameterTable.getModel().getRowCount();
 				if (numRows>0){
-				((DefaultTableModel) parameterTable.getModel()).removeRow(numRows-1);
+				//((DefaultTableModel) parameterTable.getModel()).removeRow(numRows-1);
+					int currentRow = parameterTable.getSelectedRow();
+					((DefaultTableModel) parameterTable.getModel()).removeRow(currentRow);
 				}
 			}
-		});
-		
+		});		
 		//Actions on the Parameter table
 		parameterTable.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (parameterTable.isColumnSelected(1)){
-					//JOptionPane.showMessageDialog(null, "Something just happened!!");
 					JFileChooser chooser = new JFileChooser();
 					FileNameExtensionFilter filter = new FileNameExtensionFilter(
 					        "Excel Files", "xls", "xlsx");
@@ -288,16 +271,12 @@ public class xmlBuildUI {
 		            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 		                targetDir = chooser.getSelectedFile().getPath().toString()+"\\";
 		                relative = new File(System.getProperty("user.dir")).toPath().relativize(new File(targetDir).toPath());
-		            } else {        }	
-					//---------------------
-					int numRows = parameterTable.getModel().getRowCount()-1;
-					String value = new String("Column1!!");
-					//Object [] value = new Object[1];
-					parameterTable.setValueAt(relative, numRows, 1);
+		            } else {  }
+		            int currentRow = parameterTable.getSelectedRow();
+					parameterTable.setValueAt(relative, currentRow, 1);
 				}
 				
 				if (parameterTable.isColumnSelected(4)){
-				//JOptionPane.showMessageDialog(null, "Something just happened!!");
 					JFileChooser chooser = new JFileChooser();
 					FileNameExtensionFilter filter = new FileNameExtensionFilter(
 					        "Properties Files", "properties");
@@ -311,11 +290,9 @@ public class xmlBuildUI {
 		            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
 		                targetDir = chooser.getSelectedFile().getPath().toString()+"\\";
 		                relative = new File(System.getProperty("user.dir")).toPath().relativize(new File(targetDir).toPath());
-		            } else {        }
-				int numRows = parameterTable.getModel().getRowCount()-1;
-				String value = new String("Column4!!");
-				//Object [] value = new Object[1];
-				parameterTable.setValueAt(relative, numRows, 4);
+		            } else {  }
+		            int currentRow = parameterTable.getSelectedRow();
+					parameterTable.setValueAt(relative, currentRow, 4);
 				}
 			}
 
@@ -347,7 +324,6 @@ public class xmlBuildUI {
 		btnGenerateXmlFile.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				//check parameters
-				//if(!isValidName(textFileName.getText())){
 				if(parseParameters()){
 					//Here is where parameters are integrated and call to create XML file is done
 					testSuiteName = textSuiteName.getText();
@@ -365,14 +341,10 @@ public class xmlBuildUI {
 					if(rdbtnMicrosoftIE.isSelected()){
 						browserSelected = "IE";
 					}
-					
-					// It will always have 4 columns (scenarioFilePath,testCaseID,testCaseName,objectFilePath), !skip the first column=>item#!
 					int tblRows = parameterTable.getModel().getRowCount();
 					int tblCols = parameterTable.getModel().getColumnCount();
 					boolean exception_error = false;
 					xmlParameters = new String[tblRows][tblCols];
-					//log("Number of Rows in Table: ", String.valueOf(tblRows));
-					//log("Number of Columns in Table: ", String.valueOf(tblCols));
 					//Parse the parameterTable and store values into xmlParameters
 					for(int i=0;i<tblRows;i++){
 						for (int j=0;j<tblCols;j++){
@@ -382,13 +354,10 @@ public class xmlBuildUI {
 								JOptionPane.showMessageDialog(frmDashTest, "Test Parameters cannot be empty!!!");
 								exception_error = true;
 							}
-							
-						//log("Value Stored: ", xmlParameters[i][j]);
 						}
 					}
 					if (!exception_error){
-						//Select the directory where all be located
-						
+						//Select the directory where all be located						
 						JFileChooser chooser = new JFileChooser();
 			            chooser.setCurrentDirectory(new java.io.File("."));
 			            chooser.setDialogTitle("Browse the folder to process");
@@ -397,23 +366,15 @@ public class xmlBuildUI {
 			            String targetDir=null;
 
 			            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			                targetDir = chooser.getSelectedFile().getPath().toString()+"\\";
-			                
-			                Path relative = new File(System.getProperty("user.dir")).toPath().relativize(new File(targetDir).toPath());
-			        
+			                targetDir = chooser.getSelectedFile().getPath().toString()+"\\";			                
+			                Path relative = new File(System.getProperty("user.dir")).toPath().relativize(new File(targetDir).toPath());			        
 							//Creates the file
 							CreateXMLFileJava.createXMLFile(testSuiteName,targetDir+xmlFilePath,browserSelected,xmlParameters);
 							JOptionPane.showMessageDialog(frmDashTest, "File \""+targetDir+xmlFilePath+".xml\" has been generated");
 							lblXMLFilePath.setText("To execute type: dash "+relative+"\\"+xmlFilePath+".xml");
-			            } else {
-			                //System.out.println("No Selection ");
-			            }
+			            } else {  }
 					}
-					//createXMLFile(testSuiteName,xmlFilePath,browserSelected,xmlParameters);//<--- Call to Create XML File
-					//generateXMLFile(testSuiteName,xmlFilePath,browserSelected,xmlParameters); ///<---- replace this with a call to CreateXMLFileJava
-				}else{
-					//JOptionPane.showMessageDialog(frmDashTest, "Invalid Parameter(s)!!");	
-				}
+				}else{	}
 			}		
 		});
 		
@@ -424,7 +385,7 @@ public class xmlBuildUI {
 			}
 		});
 		
-		//-----------------In case Window is closed using x button
+		//In case Window is closed using x button
 		frmDashTest.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		frmDashTest.addWindowListener(new WindowAdapter() {
 		    //@Override
@@ -444,16 +405,10 @@ public class xmlBuildUI {
 		        System.exit(0);
 		    }
 		});
-		
 		//Add all components to the window
 		frmDashTest.getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{lblSuiteName, textSuiteName, lblSelectYourBrowser, rdbtnGoogleChrome, rdbtnMozillaFirefox, rdbtnMicrosoftIE, btnGenerateXmlFile, btnExit}));
 	}
-	
-	/*private void generateXMLFile(String suiteName, String xmlFilePath, String webBrowser, String [][]xmlParameters) {  ///<--- will pass parameters from an array
-		JOptionPane.showMessageDialog(frmDashTest, "File \""+textFileName.getText()+".xml\" has been generated");
-		lblXMLFilePath.setText("To execute type: dash "+textFileName.getText()+".xml");
-	}*/
-	
+
 	public static boolean parseParameters(){
 		boolean parametersCheck = false;
 		boolean blFileName=false, blSuiteName=false, blParameterTable=false;
