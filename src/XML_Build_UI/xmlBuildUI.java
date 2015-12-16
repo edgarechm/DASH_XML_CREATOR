@@ -359,8 +359,10 @@ public class xmlBuildUI {
 					if (!exception_error){
 						//Select the directory where all be located						
 						JFileChooser chooser = new JFileChooser();
-			            chooser.setCurrentDirectory(new java.io.File("."));
+			            chooser.setCurrentDirectory(new java.io.File("..\\DASH_TEST_SRC\\automatedScripts"));
 			            chooser.setDialogTitle("Browse the folder to process");
+			            chooser.setApproveButtonText("Generate XML");
+			            chooser.setApproveButtonMnemonic('g');
 			            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			            chooser.setAcceptAllFileFilterUsed(false);
 			            String targetDir=null;
@@ -407,6 +409,7 @@ public class xmlBuildUI {
 		});
 		//Add all components to the window
 		frmDashTest.getContentPane().setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{lblSuiteName, textSuiteName, lblSelectYourBrowser, rdbtnGoogleChrome, rdbtnMozillaFirefox, rdbtnMicrosoftIE, btnGenerateXmlFile, btnExit}));
+		frmDashTest.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{textSuiteName, textFileName, rdbtnGoogleChrome, rdbtnMozillaFirefox, rdbtnMicrosoftIE, btnAddRowstests, btnDeleteRowstests, btnGenerateXmlFile, btnExit, frmDashTest.getContentPane(), lblSuiteName, lblFilename, lblxml, lblSelectYourBrowser, lblXMLFilePath, parameterTable, scrollPane}));
 	}
 
 	public static boolean parseParameters(){
