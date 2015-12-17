@@ -1,3 +1,15 @@
+/*
+ * DASH_TEST: Test Accelerator
+ * Developed by: Edgar Chavez 
+ * 
+ * Module name: xmlBuildUI
+ * Purpose: XML Configuration file Generation User Interfase.
+ * 		Use this simple app to generate your configuration files and call
+ * 		DASH to execute your test scripts.
+ * 
+ * Language used: Java JavaSE-1.7
+ * Project Start Date: 2013/04/10
+ */
 package XML_Build_UI;
 
 import java.awt.EventQueue;

@@ -1,3 +1,15 @@
+/*
+ * DASH_TEST: Test Accelerator
+ * Developed by: Edgar Chavez 
+ * 
+ * Module name: CreateXMLFileJava
+ * Purpose: XML Configuration file Generation application.
+ * 		This application will generate an XML Configuration file
+ * 		that matches DASH requirements to execute your testscripts.
+ * 
+ * Language used: Java JavaSE-1.7
+ * Project Start Date: 2013/04/10
+ */
 package XML_Builder;
 
 import java.io.File;
@@ -22,32 +34,6 @@ import org.w3c.dom.Element;
 public class CreateXMLFileJava {
 
 	final static String[] parameterNames ={"webBrowser","scenarioFilePath","testCaseID","testCaseName","objectFilePath"};
-
-	//@SuppressWarnings("null")
-	/*public static void main(String argv[]) throws Exception {
-		
-		
-		String localDir = System.getProperty("user.dir");
-		String suiteName = "TestSuite";
-		String[][] parameter_value = new String[2][5];
-		String xmlFilePath = localDir+"\\xmltmp\\xmlfile.xml";
-		String webBrowser="CHROME";
-		
-		parameter_value[0][0]="Test 01";   //TestName
-		parameter_value[0][1]="TS-LoginMyNe.xls"; //Scenario File Path
-		parameter_value[0][2]="TS-LoginMyNe_Ed"; //Test Case ID
-		parameter_value[0][3]="Open Browser and Login";  //Test Description
-		parameter_value[0][4]="loginScreens_objects.properties"; //Object File
-		
-		parameter_value[1][0]="Test 02";   //TestName
-		parameter_value[1][1]="TS-LoginMyNe2.xls"; //Scenario File Path
-		parameter_value[1][2]="TS-LoginMyNe_Ed2"; //Test Case ID
-		parameter_value[1][3]="Open Browser and Login two";  //Test Description
-		parameter_value[1][4]="loginScreens_objects2.properties"; //Object File
-		
-		createXMLFile(suiteName,xmlFilePath,webBrowser,parameter_value);
-	
-	}*/
 	
 	/// Call will need to be changed for this---> createXMLFile(String suiteName, String xmlFilePath, String webBrowser, String [][]xmlParameters)
 	public static void createXMLFile(String suiteName, String xmlFilePath, String webBrowser, String [][]xmlParameters){
