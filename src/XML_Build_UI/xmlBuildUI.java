@@ -54,6 +54,7 @@ public class xmlBuildUI {
 	private static JTextField textSuiteName;
 	private static JTextField textFileName;
 	private final ButtonGroup buttonGroup = new ButtonGroup();
+	private final String osName = System.getProperty("os.name"); //(Windows, Linux, Mac, SunOS, FreeBSD)?
 	private JLabel lblXMLFilePath,lblFilename,lblxml;
 	private JButton btnGenerateXmlFile, btnAddRowstests,btnDeleteRowstests, btnExit;
 	private String[][]xmlParameters;
@@ -87,6 +88,7 @@ public class xmlBuildUI {
 		frmDashTest.setTitle("DASH Test - XML Builder");
 		frmDashTest.setBounds(20, 100, 1320, 500);
 		frmDashTest.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		
 		//The labels and textboxes
 		JLabel lblSuiteName = new JLabel("Suite Name :");
@@ -262,18 +264,28 @@ public class xmlBuildUI {
 					FileNameExtensionFilter filter = new FileNameExtensionFilter(
 					        "Excel Files", "xls", "xlsx");
 					chooser.setFileFilter(filter);
-		            chooser.setCurrentDirectory(new java.io.File("..\\DASH_TEST_SRC\\automatedScripts"));
-		            chooser.setDialogTitle("Select your Script File");
+					if (osName.contains("Windows")){
+						chooser.setCurrentDirectory(new java.io.File("..\\DASH_TEST_SRC\\automatedScripts"));
+					}else{
+						chooser.setCurrentDirectory(new java.io.File("../DASH_TEST_SRC/automatedScripts"));
+					}
+		            chooser.setDialogTitle("Select your Script File...");
+		            chooser.setApproveButtonText("Select File");
 		            chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		            chooser.setAcceptAllFileFilterUsed(false);
 		            String targetDir=null;
 		            Path relative=null;
 		            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-		                targetDir = chooser.getSelectedFile().getPath().toString()+"\\";
+		            	if (osName.contains("Windows")){
+		            		targetDir = chooser.getSelectedFile().getPath().toString()+"\\";
+		            	}else{
+		            		targetDir = chooser.getSelectedFile().getPath().toString()+"/";
+		            	}
 		                relative = new File(System.getProperty("user.dir")).toPath().relativize(new File(targetDir).toPath());
 		            } else {  }
 		            int currentRow = parameterTable.getSelectedRow();
 					parameterTable.setValueAt(relative, currentRow, 1);
+		            //parameterTable.setValueAt(targetDir, currentRow, 1);//remove after testing
 				}
 				
 				if (parameterTable.isColumnSelected(4)){
@@ -281,39 +293,43 @@ public class xmlBuildUI {
 					FileNameExtensionFilter filter = new FileNameExtensionFilter(
 					        "Properties Files", "properties");
 					chooser.setFileFilter(filter);
-		            chooser.setCurrentDirectory(new java.io.File("..\\DASH_TEST_SRC\\object_repositories"));
-		            chooser.setDialogTitle("Select your Properties File");
+					if (osName.contains("Windows")){
+						chooser.setCurrentDirectory(new java.io.File("..\\DASH_TEST_SRC\\object_repositories"));
+					}else{
+						chooser.setCurrentDirectory(new java.io.File("../DASH_TEST_SRC/object_repositories"));
+					}
+		            chooser.setDialogTitle("Select your Properties File...");
+		            chooser.setApproveButtonText("Select File");
 		            chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		            chooser.setAcceptAllFileFilterUsed(false);
 		            String targetDir=null;
 		            Path relative=null;
 		            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-		                targetDir = chooser.getSelectedFile().getPath().toString()+"\\";
+		            	if (osName.contains("Windows")){
+		            		targetDir = chooser.getSelectedFile().getPath().toString()+"\\";
+		            	}else{
+		            		targetDir = chooser.getSelectedFile().getPath().toString()+"/";
+		            	}
 		                relative = new File(System.getProperty("user.dir")).toPath().relativize(new File(targetDir).toPath());
 		            } else {  }
 		            int currentRow = parameterTable.getSelectedRow();
 					parameterTable.setValueAt(relative, currentRow, 4);
+		            //parameterTable.setValueAt(targetDir, currentRow, 4);//remove after testing
 				}
 			}
 
 			@Override
 			public void mouseEntered(MouseEvent e) {
-				//Auto-generated method stub
-				
+				//Auto-generated method stub	
 			}
-
 			@Override
 			public void mouseExited(MouseEvent e) {
-				//Auto-generated method stub
-				
+				//Auto-generated method stub	
 			}
-
 			@Override
 			public void mousePressed(MouseEvent e) {
-				//Auto-generated method stub
-				
+				//Auto-generated method stub	
 			}
-
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				//Auto-generated method stub	
@@ -328,9 +344,9 @@ public class xmlBuildUI {
 					//Here is where parameters are integrated and call to create XML file is done
 					testSuiteName = textSuiteName.getText();
 					xmlFilePath = textFileName.getText();
-					testCaseID = "TS-001";
-					testCaseName = "This is a test";
-					objectFilePath = "loginScreens_objects.properties";
+					//testCaseID = "TS-001";
+					//testCaseName = "This is a test";
+					//objectFilePath = "loginScreens_objects.properties";
 					
 					if(rdbtnGoogleChrome.isSelected()){
 						browserSelected = "CHROME";
@@ -359,8 +375,13 @@ public class xmlBuildUI {
 					if (!exception_error){
 						//Select the directory where all be located						
 						JFileChooser chooser = new JFileChooser();
-			            chooser.setCurrentDirectory(new java.io.File("..\\DASH_TEST_SRC\\automatedScripts"));
-			            chooser.setDialogTitle("Browse the folder to process");
+						if (osName.contains("Windows")){
+							chooser.setCurrentDirectory(new java.io.File("..\\DASH_TEST_SRC\\automatedScripts"));
+						}else{
+							chooser.setCurrentDirectory(new java.io.File("../DASH_TEST_SRC/automatedScripts"));
+						}
+			            
+			            chooser.setDialogTitle("Select directory where XML will be saved...");
 			            chooser.setApproveButtonText("Generate XML");
 			            chooser.setApproveButtonMnemonic('g');
 			            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -368,12 +389,20 @@ public class xmlBuildUI {
 			            String targetDir=null;
 
 			            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-			                targetDir = chooser.getSelectedFile().getPath().toString()+"\\";			                
+			            	if (osName.contains("Windows")){
+			            		targetDir = chooser.getSelectedFile().getPath().toString()+"\\";
+			            	}else{
+			            		targetDir = chooser.getSelectedFile().getPath().toString()+"/";
+			            	}
 			                Path relative = new File(System.getProperty("user.dir")).toPath().relativize(new File(targetDir).toPath());			        
 							//Creates the file
 							CreateXMLFileJava.createXMLFile(testSuiteName,targetDir+xmlFilePath,browserSelected,xmlParameters);
 							JOptionPane.showMessageDialog(frmDashTest, "File \""+targetDir+xmlFilePath+".xml\" has been generated");
-							lblXMLFilePath.setText("To execute type: dash "+relative+"\\"+xmlFilePath+".xml");
+							if (osName.contains("Windows")){
+								lblXMLFilePath.setText("To execute type: dash "+relative+"\\"+xmlFilePath+".xml");
+							}else{
+								lblXMLFilePath.setText("To execute type: dash "+relative+"/"+xmlFilePath+".xml");
+							}
 			            } else {  }
 					}
 				}else{	}
