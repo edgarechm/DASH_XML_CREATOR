@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.nio.file.LinkOption;
 import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -277,9 +278,9 @@ public class xmlBuildUI {
 					        "Excel Files", "xls", "xlsx");
 					chooser.setFileFilter(filter);
 					if (osName.contains("Windows")){
-						chooser.setCurrentDirectory(new java.io.File("..\\DASH_TEST_SRC\\automatedScripts"));
+						chooser.setCurrentDirectory(new java.io.File(System.getProperty("user.dir")+"\\automatedScripts"));
 					}else{
-						chooser.setCurrentDirectory(new java.io.File("../DASH_TEST_SRC/automatedScripts"));
+						chooser.setCurrentDirectory(new java.io.File(System.getProperty("user.dir")+"/automatedScripts"));
 					}
 		            chooser.setDialogTitle("Select your Script File...");
 		            chooser.setApproveButtonText("Select File");
@@ -288,16 +289,19 @@ public class xmlBuildUI {
 		            String targetDir=null;
 		            Path relative=null;
 		            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-		            	if (osName.contains("Windows")){
-		            		targetDir = chooser.getSelectedFile().getPath().toString()+"\\";
-		            	}else{
-		            		targetDir = chooser.getSelectedFile().getPath().toString()+"/";
-		            	}
+		            	targetDir = chooser.getSelectedFile().getPath().toString();//+"\\";
 		                relative = new File(System.getProperty("user.dir")).toPath().relativize(new File(targetDir).toPath());
 		            } else {  }
 		            int currentRow = parameterTable.getSelectedRow();
-					parameterTable.setValueAt(relative, currentRow, 1);
-		            //parameterTable.setValueAt(targetDir, currentRow, 1);//remove after testing
+		            targetDir = relative.toString();
+		            if (osName.contains("Windows")){
+		            	targetDir = targetDir.replace("automatedScripts\\", "");
+		            }else{
+		            	targetDir = targetDir.replace("automatedScripts/", "");
+		            }
+		            //targetDir=targetDir.substring(17);
+					//parameterTable.setValueAt(relative, currentRow, 1);
+		            parameterTable.setValueAt(targetDir, currentRow, 1);//remove after testing
 				}
 				
 				if (parameterTable.isColumnSelected(4)){
@@ -306,9 +310,9 @@ public class xmlBuildUI {
 					        "Properties Files", "properties");
 					chooser.setFileFilter(filter);
 					if (osName.contains("Windows")){
-						chooser.setCurrentDirectory(new java.io.File("..\\DASH_TEST_SRC\\object_repositories"));
+						chooser.setCurrentDirectory(new java.io.File(System.getProperty("user.dir")+"\\object_repositories"));
 					}else{
-						chooser.setCurrentDirectory(new java.io.File("../DASH_TEST_SRC/object_repositories"));
+						chooser.setCurrentDirectory(new java.io.File(System.getProperty("user.dir")+"/object_repositories"));
 					}
 		            chooser.setDialogTitle("Select your Properties File...");
 		            chooser.setApproveButtonText("Select File");
@@ -317,16 +321,20 @@ public class xmlBuildUI {
 		            String targetDir=null;
 		            Path relative=null;
 		            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-		            	if (osName.contains("Windows")){
-		            		targetDir = chooser.getSelectedFile().getPath().toString()+"\\";
-		            	}else{
-		            		targetDir = chooser.getSelectedFile().getPath().toString()+"/";
-		            	}
+		            	targetDir = chooser.getSelectedFile().getPath().toString();//+"/";
 		                relative = new File(System.getProperty("user.dir")).toPath().relativize(new File(targetDir).toPath());
 		            } else {  }
 		            int currentRow = parameterTable.getSelectedRow();
-					parameterTable.setValueAt(relative, currentRow, 4);
-		            //parameterTable.setValueAt(targetDir, currentRow, 4);//remove after testing
+		            targetDir = relative.toString();
+		            if (osName.contains("Windows")){
+		            	targetDir = targetDir.replace("object_repositories\\", "");
+		            }else{
+		            	targetDir = targetDir.replace("object_repositories/", "");
+		            }
+		            //targetDir = targetDir.replace("\\object_repositories", "");
+		            //targetDir=targetDir.substring(20);
+					//parameterTable.setValueAt(relative, currentRow, 4);
+		            parameterTable.setValueAt(targetDir, currentRow, 4);//remove after testing
 				}
 			}
 
@@ -388,9 +396,9 @@ public class xmlBuildUI {
 						//Select the directory where all be located						
 						JFileChooser chooser = new JFileChooser();
 						if (osName.contains("Windows")){
-							chooser.setCurrentDirectory(new java.io.File("..\\DASH_TEST_SRC\\automatedScripts"));
+							chooser.setCurrentDirectory(new java.io.File(System.getProperty("user.dir")+"\\automatedScripts"));
 						}else{
-							chooser.setCurrentDirectory(new java.io.File("../DASH_TEST_SRC/automatedScripts"));
+							chooser.setCurrentDirectory(new java.io.File(System.getProperty("user.dir")+"/automatedScripts"));
 						}
 			            
 			            chooser.setDialogTitle("Select directory where XML will be saved...");
